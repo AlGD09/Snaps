@@ -15,7 +15,7 @@ jobs:
         run: |
           mkdir -p prime/bin
           mkdir -p prime/meta
-          cp Hello.sh prime/bin/hello.sh
+          cp hello.sh prime/bin/hello.sh
           chmod +x prime/bin/hello.sh
           cp snap/snap.yaml prime/meta/snap.yaml
 
