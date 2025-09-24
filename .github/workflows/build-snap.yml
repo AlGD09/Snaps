@@ -14,9 +14,11 @@ jobs:
       - name: Prepare Snap folder
         run: |
           mkdir -p prime/bin
-          cp hello.sh prime/bin/hello.sh
+          mkdir -p prime/meta
+          cp Hello.sh prime/bin/hello.sh
           chmod +x prime/bin/hello.sh
-          cp snap/snap.yaml prime/snap.yaml
+          cp snap/snap.yaml prime/meta/snap.yaml
+
 
       - name: Pack Snap
         run: |
