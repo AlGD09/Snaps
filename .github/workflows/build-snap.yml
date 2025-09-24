@@ -1,0 +1,24 @@
+name: Build Snap
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Snapcraft
+        run: sudo snap install snapcraft --classic
+
+      - name: Build Snap
+        run: snapcraft --use-lxd
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: hello-rcu-snap
+          path: ./*.snap
