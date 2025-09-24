@@ -1,1 +1,18 @@
+name: hello-rcu
+base: core22
+version: '0.1'
+summary: Mein erstes Test-Snap
+description: |
+  Ein einfaches Snap, das "Hello RCU" ausgibt.
+
+apps:
+  hello-rcu:
+    command: bin/hello.sh
+
+parts:
+  hello-rcu:
+    plugin: dump
+    source: .
+    organize:
+      hello.sh: bin/hello.sh
 
