@@ -11,22 +11,26 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # QEMU installieren, damit ARM-Programme laufen können
+      # QEMU für ARM aktivieren
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
           platforms: arm
 
-      # Snapcraft installieren
-      - name: Install Snapcraft
-        run: sudo snap install snapcraft --classic
-
-      # Snap für ARMHF bauen
-      - name: Build snap (armhf)
+      # Docker für ARMHF-Container starten und Snapcraft darin bauen
+      - name: Build in armhf container
         run: |
-          snapcraft --destructive-mode --target-arch=armhf
+          docker run --rm -t \
+            -v ${{ github.workspace }}:/build \
+            -w /build \
+            arm32v7/ubuntu:22.04 \
+            /bin/bash -c "\
+              apt-get update && \
+              apt-get install -y snapd snapcraft && \
+              snapcraft pack \
+            "
 
-      # Artefakt hochladen (.snap-Datei)
+      # Snap hochladen
       - name: Upload Snap artifact
         uses: actions/upload-artifact@v4
         with:
