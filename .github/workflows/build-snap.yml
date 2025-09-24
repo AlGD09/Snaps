@@ -1,4 +1,4 @@
-name: Build Snap for ARMHF
+name: Build Snap (armhf, no store)
 
 on:
   push:
@@ -11,29 +11,46 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # QEMU + Buildx für Multiarch aktivieren
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # ARM32-Container starten und Snap bauen
-      - name: Build in armhf container
+      - name: Build Snap manually
         run: |
+          mkdir -p prime/bin
+          mkdir -p prime/meta
+          cp hello.sh prime/bin/hello.sh
+          chmod +x prime/bin/hello.sh
+
+          cat > prime/meta/snap.yaml <<EOL
+          name: hello-rcu
+          version: '0.1'
+          summary: Hello RCU
+          description: Simple hello world snap
+          grade: devel
+          confinement: devmode
+
+          apps:
+            hello-rcu:
+              command: bin/hello.sh
+          EOL
+
+          # Pack snap for ARMv7 (armhf)
           docker run --rm --platform linux/arm/v7 \
             -v ${{ github.workspace }}:/build \
             -w /build \
             ubuntu:22.04 \
             /bin/bash -c "\
               apt-get update && \
-              apt-get install -y snapd snapcraft && \
-              snapcraft pack \
+              apt-get install -y snapd && \
+              snap pack prime \
             "
 
-      # Snap als Artifact hochladen
       - name: Upload Snap artifact
         uses: actions/upload-artifact@v4
         with:
           name: hello-rcu-snap
           path: ./*.snap
+
