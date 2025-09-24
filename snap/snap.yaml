@@ -1,0 +1,11 @@
+name: hello-rcu
+version: '0.1'
+summary: Hello RCU
+description: |
+  Einfaches Test-Snap für die RCU.
+grade: devel
+confinement: devmode
+
+apps:
+  hello-rcu:
+    command: bin/hello.sh
