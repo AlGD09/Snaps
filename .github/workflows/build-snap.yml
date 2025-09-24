@@ -20,12 +20,11 @@ jobs:
           cp snap/snap.yaml prime/meta/snap.yaml
 
 
-      - name: Pack Snap
+      - name: Pack Snap (armhf)
         run: |
           sudo apt update
           sudo apt install snapd -y
-          sudo snap install snapd-desktop-integration
-          snap pack prime
+          snap pack prime --build-for=armhf
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
