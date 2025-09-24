@@ -11,29 +11,29 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # QEMU für ARM aktivieren
+      # QEMU + Buildx für Multiarch aktivieren
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
-        with:
-          platforms: arm
 
-      # Docker für ARMHF-Container starten und Snapcraft darin bauen
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # ARM32-Container starten und Snap bauen
       - name: Build in armhf container
         run: |
-          docker run --rm -t \
+          docker run --rm --platform linux/arm/v7 \
             -v ${{ github.workspace }}:/build \
             -w /build \
-            arm32v7/ubuntu:22.04 \
+            ubuntu:22.04 \
             /bin/bash -c "\
               apt-get update && \
               apt-get install -y snapd snapcraft && \
               snapcraft pack \
             "
 
-      # Snap hochladen
+      # Snap als Artifact hochladen
       - name: Upload Snap artifact
         uses: actions/upload-artifact@v4
         with:
           name: hello-rcu-snap
           path: ./*.snap
-
