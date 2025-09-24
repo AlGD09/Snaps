@@ -31,6 +31,8 @@ jobs:
           description: Simple hello world snap
           grade: devel
           confinement: devmode
+          architectures:
+            - armhf
 
           apps:
             hello-rcu:
