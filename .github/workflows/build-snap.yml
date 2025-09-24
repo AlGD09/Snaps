@@ -1,4 +1,4 @@
-name: Build Snap
+name: Build Snap (simple)
 
 on:
   push:
@@ -11,11 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install Snapcraft
-        run: sudo snap install snapcraft --classic
+      - name: Prepare Snap folder
+        run: |
+          mkdir -p prime/bin
+          cp hello.sh prime/bin/hello.sh
+          chmod +x prime/bin/hello.sh
+          cp snap/snap.yaml prime/snap.yaml
 
-      - name: Build Snap without LXD
-        run: snapcraft pack
+      - name: Pack Snap
+        run: |
+          sudo apt update
+          sudo apt install snapd -y
+          sudo snap install snapd-desktop-integration
+          snap pack prime
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
