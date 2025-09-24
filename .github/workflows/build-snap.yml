@@ -18,7 +18,7 @@ jobs:
         run: snapcraft --use-lxd
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hello-rcu-snap
           path: ./*.snap
