@@ -1,4 +1,4 @@
-name: Build Snap (simple)
+name: Build Snap for ARMHF
 
 on:
   push:
@@ -11,23 +11,25 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Prepare Snap folder
+      # QEMU installieren, damit ARM-Programme laufen können
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: arm
+
+      # Snapcraft installieren
+      - name: Install Snapcraft
+        run: sudo snap install snapcraft --classic
+
+      # Snap für ARMHF bauen
+      - name: Build snap (armhf)
         run: |
-          mkdir -p prime/bin
-          mkdir -p prime/meta
-          cp hello.sh prime/bin/hello.sh
-          chmod +x prime/bin/hello.sh
-          cp snap/snap.yaml prime/meta/snap.yaml
+          snapcraft --destructive-mode --target-arch=armhf
 
-
-      - name: Pack Snap (armhf)
-        run: |
-          sudo apt update
-          sudo apt install snapd -y
-          snap pack prime --build-for=armhf
-
-      - name: Upload Artifact
+      # Artefakt hochladen (.snap-Datei)
+      - name: Upload Snap artifact
         uses: actions/upload-artifact@v4
         with:
           name: hello-rcu-snap
           path: ./*.snap
+
