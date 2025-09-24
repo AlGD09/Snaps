@@ -5,6 +5,9 @@ summary: Mein erstes Test-Snap
 description: |
   Ein einfaches Snap, das "Hello RCU" ausgibt.
 
+confinement: devmode
+grade: devel
+
 apps:
   hello-rcu:
     command: bin/hello.sh
